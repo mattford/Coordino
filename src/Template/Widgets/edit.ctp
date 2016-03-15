@@ -1,27 +1,35 @@
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Form->postLink(
-                __('Delete'),
-                ['action' => 'delete', $widget->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $widget->id)]
-            )
-        ?></li>
-        <li><?= $this->Html->link(__('List Widgets'), ['action' => 'index']) ?></li>
-    </ul>
-</nav>
-<div class="widgets form large-9 medium-8 columns content">
-    <?= $this->Form->create($widget) ?>
-    <fieldset>
-        <legend><?= __('Edit Widget') ?></legend>
-        <?php
-            echo $this->Form->input('page');
-            echo $this->Form->input('location');
-            echo $this->Form->input('title');
-            echo $this->Form->input('content');
-            echo $this->Form->input('global');
-        ?>
-    </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
-    <?= $this->Form->end() ?>
+<?php
+echo $this->Html->css('wmd.css');
+echo $this->Html->script('wmd/showdown.js');
+echo $this->Html->script('wmd/wmd.js');
+
+echo $this->Html->script('jquery/jquery.js');
+echo $this->Html->script('jquery/jquery.bgiframe.min.js');
+echo $this->Html->script('jquery/jquery.ajaxQueue.js');
+echo $this->Html->script('jquery/thickbox-compressed.js');
+echo $this->Html->script('jquery/jquery.autocomplete.js');
+echo $this->Html->script('/tags/suggest');
+
+echo $this->Html->css('thickbox.css');
+echo $this->Html->css('jquery.autocomplete.css');
+
+echo $this->Form->create('Widget');
+echo $this->Form->hidden('location');
+?>
+<div class="detailed_inputs">
+    <div>
+        <h3>Title <span class="small">The large text that appears on the top of a widget.</span></h3>
+        <?= $this->Form->input('title'); ?>
+    </div>
+    <div>
+        <h3>Content <span class="small">What would you like to say?.</span></h3>
+        <div id="wmd-button-bar" class="wmd-panel"></div>
+        <?= $this->Form->textarea('content', ['id' => 'wmd-input', 'class' => 'wmd-panel']); ?><br />
+        <?= $this->Form->checkbox('global', ['style' => 'width: 15px;']); ?> Show this Widget on all pages
+    </div>
+    <div id="wmd-preview" class="wmd-panel"></div>
+    <div class="submit">
+        <?= $this->Form->submit('Update this widget');
+    </div>
 </div>
+<?= $this->Form->end();

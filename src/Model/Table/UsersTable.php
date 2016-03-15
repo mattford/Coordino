@@ -16,6 +16,9 @@ use Coordino\Model\Entity\User;
  * @property \Cake\ORM\Association\HasMany $Posts
  * @property \Cake\ORM\Association\HasMany $PostsRevs
  * @property \Cake\ORM\Association\HasMany $Votes
+ * @property \Cake\ORM\Association\HasMany $RecentAsked
+ * @property \Cake\ORM\Association\HasMany $RecentAnswered
+ * @property \Cake\ORM\Association\HasMany $Recent
  */
 class UsersTable extends Table
 {
@@ -51,6 +54,30 @@ class UsersTable extends Table
         ]);
         $this->hasMany('Votes', [
             'foreignKey' => 'user_id'
+        ]);
+        $this->hasMany('RecentAsked', [
+            'className' => 'Posts',
+            'foreignKey' => 'user_id',
+            'conditions' => [
+                'type' => 'Q'
+            ],
+            'limit' => 5,
+            'orderBy' => 'timestamp DESC'
+        ]);
+        $this->hasMany('RecentAnswered', [
+            'className' => 'Posts',
+            'foreignKey' => 'user_id',
+            'conditions' => [
+                'type' => 'A'
+            ],
+            'limit' => 5,
+            'orderBy' => 'timestamp DESC'
+        ]); 
+        $this->hasMany('Recent', [
+            'className' => 'Histories',
+            'foreignKey' => 'user_id',
+            'limit' => 10,
+            'orderBy' => 'timestamp DESC'
         ]);
     }
 

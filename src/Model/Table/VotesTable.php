@@ -38,6 +38,25 @@ class VotesTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
+        
+        $this->addBehavior('Timestamp', [
+            'events' => [
+                'Model.beforeSave' => [
+                    'timestamp' => 'new'
+                ]
+            ]
+        ]);
+        
+        $this->addBehavior('Muffin/Footprint.Footprint', [
+            'events' => [
+                'Model.beforeSave' => [
+                    'user_id' => 'new'
+                ]
+            ],
+            'propertiesMap' => [
+                'user_id' => '_footprint.id'
+            ]
+        ]);
     }
 
     /**
@@ -53,9 +72,7 @@ class VotesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->add('timestamp', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('timestamp', 'create')
-            ->notEmpty('timestamp');
+            ->add('timestamp', 'valid', ['rule' => 'numeric']);
 
         $validator
             ->requirePresence('type', 'create')
@@ -77,4 +94,5 @@ class VotesTable extends Table
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         return $rules;
     }
+
 }

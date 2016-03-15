@@ -9,7 +9,7 @@
 <?php
     $this->Flash->render('auth');
     echo $this->Form->create('User', array('action' => 'login'));
-    echo $this->Form->input('email', array('class' => 'large_input'));
+    echo $this->Form->input('username', array('class' => 'large_input'));
     echo $this->Form->input('password', array('class' => 'large_input'));
     echo $this->Form->submit('Login');
     echo $this->Form->end();

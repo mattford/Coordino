@@ -13,6 +13,16 @@ use Cake\Utility\Text;
  */
 class UsersController extends AppController
 {
+    
+    private $allowedTypes = [
+      	'image/jpeg',
+    	'image/gif',
+    	'image/png',
+    	'image/pjpeg',
+    	'image/x-png'           
+    ];
+    
+    
     /**
      * 
      * @param \Coordino\Controller\Event $event
@@ -20,7 +30,7 @@ class UsersController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['login', 'register', 'reset']);
+        $this->Auth->allow(['login', 'register', 'requestPasswordReset', 'resetPassword']);
     }
 
     /**
@@ -66,11 +76,33 @@ class UsersController extends AppController
         $this->set(compact('user'));
     }
     
-    public function settings() {
-        
+    public function settings() 
+    {
+      
         $user = $this->Users->findById($this->Auth->user('id'))->first();
-        
-        if ($this->request->is('post')) {
+
+        if ($this->request->is('put')) {
+
+            if (isset($this->request->data['image'])) {
+
+                if (in_array($this->request->data['image']['type'], $this->allowedTypes)) {
+                    $fileNameParts = explode(".", $this->request->data['image']['name']);
+                    $ext = end($fileNameParts);
+                    $newFilename = $this->Auth->user('username') . '.' . $ext;
+                    if (isset($user->image)) {
+                        @unlink(WWW_ROOT . DS . 'img' . DS . $user->image);
+                    }
+                    move_uploaded_file($this->request->data['image']['tmp_name'], WWW_ROOT . DS . 'img' . DS . 'uploads' . DS . $newFilename);
+                    $this->request->data['image'] = 'uploads'.DS.$newFilename;
+                } else {
+                    unset($this->request->data['image']);
+                }
+            }
+            
+            if (isset($this->request->data['new_password']) && strlen($this->request->data['new_password']) > 0) {
+                $this->request->data['password'] = $this->request->data['new_password'];
+            }
+            
             $user = $this->Users->patchEntity($user, $this->request->data);
             if ($this->Users->save($user)) {
                 $this->Flash->success('Settings updated');
@@ -143,11 +175,19 @@ class UsersController extends AppController
         $this->redirect($this->Auth->logout());
     }
 	
-    public function view($id) {
-        $user = $this->Users->findById($id)->first();
+    public function view($username) {
+        $user = $this->Users->find('all', [
+            'conditions' => [
+                'username' => $username
+            ],
+            'contain' => [
+                'RecentAsked',
+                'RecentAnswered',
+                'Recent'
+            ]
+        ])->first();
         $this->pageTitle = $user->username . '\'s Profile';
         $this->set(compact('user'));
     }
-
-    
+ 
 }

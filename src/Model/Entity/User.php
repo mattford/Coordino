@@ -51,6 +51,15 @@ class User extends Entity
     ];
     
     /**
+     * Fields to hide in array format
+     * 
+     * @var array
+     */
+    protected $_hidden = [
+        'password'
+    ];
+    
+    /**
      * Hash the password before saving
      */
     protected function _setPassword($password) 
@@ -58,5 +67,10 @@ class User extends Entity
         if (strlen($password) > 0) {
             return (new DefaultPasswordHasher())->hash($password);
         }       
+    }
+    
+    public function hasPermission($permission, $postId) 
+    {
+        return true;
     }
 }

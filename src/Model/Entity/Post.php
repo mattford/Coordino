@@ -17,7 +17,8 @@ use Cake\ORM\Entity;
  * @property int $last_edited_timestamp
  * @property int $user_id
  * @property \Coordino\Model\Entity\User $user
- * @property \Coordino\Model\Entity\Vote[] $votes
+ * @property \Coordino\Model\Entity\Vote[] VotesHistory
+ * @property int $votes
  * @property string $url_title
  * @property string $public_key
  * @property int $views
@@ -42,4 +43,21 @@ class Post extends Entity
         '*' => true,
         'id' => false,
     ];
+    
+    protected function _setContent($text)
+    {
+        return \Parsedown::instance()->text($text);
+    }
+   
+    public function hasExistingVote($type)
+    {
+        if ($this->has('existing_votes') && !empty($this->existing_votes)) {
+            foreach ($this->existing_votes as $vote) {
+                if ($vote->type === $type) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

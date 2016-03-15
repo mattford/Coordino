@@ -7,7 +7,7 @@ use Cake\ORM\Entity;
  * Tag Entity.
  *
  * @property int $id
- * @property string $tag
+ * @property string $name
  * @property string $slug
  */
 class Tag extends Entity

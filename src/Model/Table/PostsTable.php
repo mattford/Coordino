@@ -10,12 +10,14 @@ use Coordino\Model\Entity\Post;
 /**
  * Posts Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Relateds
+ * @property \Cake\ORM\Association\BelongsTo $ParentPosts
  * @property \Cake\ORM\Association\BelongsTo $Users
  * @property \Cake\ORM\Association\HasMany $PostTags
- * @property \Cake\ORM\Association\HasMany $Votes
+ * @property \Cake\ORM\Association\HasMany $VotesHistory
+ * @property \Cake\ORM\Association\HasMany $Answers
+ * @property \Cake\ORM\Association\HasMany $Comments
  */
-class PostsTable extends Table
+class PostsTable extends Table 
 {
 
     /**
@@ -32,8 +34,9 @@ class PostsTable extends Table
         $this->displayField('title');
         $this->primaryKey('id');
 
-        $this->belongsTo('Relateds', [
-            'foreignKey' => 'related_id',
+        $this->belongsTo('ParentPosts', [
+            'className' => 'Posts',
+            'foreignKey' => 'parent_post_id',
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Users', [
@@ -43,9 +46,39 @@ class PostsTable extends Table
         $this->hasMany('PostTags', [
             'foreignKey' => 'post_id'
         ]);
-        $this->hasMany('Votes', [
+        $this->hasMany('VotesHistory', [
+            'className' => 'Votes',
             'foreignKey' => 'post_id'
         ]);
+        $this->hasMany('Answers', [
+            'className' => 'Posts',
+            'foreignKey' => 'parent_post_id',
+            'conditions' => [
+                'type' => 'answer'
+            ]
+        ]);
+        $this->hasMany('Comments', [
+            'className' => 'Posts',
+            'foreignKey' => 'parent_post_id',
+            'conditions' => [
+                'type' => 'comment'
+            ]
+        ]);
+        
+        $this->addBehavior('Timestamp');
+        $this->addBehavior('Sluggable', ['slug' => 'url_title']);
+        $this->addBehavior('Muffin/Footprint.Footprint', [
+            'events' => [
+                'Model.beforeSave' => [
+                    'user_id' => 'new'
+                ]
+            ],
+            'propertiesMap' => [
+                'user_id' => '_footprint.id'
+            ]
+        ]);
+            
+       
     }
 
     /**
@@ -61,62 +94,34 @@ class PostsTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->requirePresence('type', 'create')
-            ->notEmpty('type');
-
-        $validator
-            ->requirePresence('title', 'create')
-            ->notEmpty('title');
+            ->requirePresence('title', function($context) {
+                return ($context['data']['type'] === 'question');
+            })
+            ->notEmpty('title', 'This field cannot be empty', function($context) {
+                return ($context['data']['type'] === 'question');
+            });
 
         $validator
             ->requirePresence('content', 'create')
             ->notEmpty('content');
 
         $validator
-            ->requirePresence('status', 'create')
-            ->notEmpty('status');
+            ->add('created', 'valid', ['rule' => 'numeric']);
 
         $validator
-            ->add('timestamp', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('timestamp', 'create')
-            ->notEmpty('timestamp');
+            ->add('modified', 'valid', ['rule' => 'numeric']);
 
         $validator
-            ->add('last_edited_timestamp', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('last_edited_timestamp', 'create')
-            ->notEmpty('last_edited_timestamp');
+            ->add('votes', 'valid', ['rule' => 'numeric']);
 
         $validator
-            ->add('votes', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('votes', 'create')
-            ->notEmpty('votes');
+            ->add('views', 'valid', ['rule' => 'numeric']);
 
         $validator
-            ->requirePresence('url_title', 'create')
-            ->notEmpty('url_title');
+            ->add('flags', 'valid', ['rule' => 'numeric']);
 
         $validator
-            ->requirePresence('public_key', 'create')
-            ->notEmpty('public_key');
-
-        $validator
-            ->add('views', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('views', 'create')
-            ->notEmpty('views');
-
-        $validator
-            ->requirePresence('tags', 'create')
-            ->notEmpty('tags');
-
-        $validator
-            ->add('flags', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('flags', 'create')
-            ->notEmpty('flags');
-
-        $validator
-            ->add('notify', 'valid', ['rule' => 'boolean'])
-            ->requirePresence('notify', 'create')
-            ->notEmpty('notify');
+            ->add('notify', 'valid', ['rule' => 'boolean']);
 
         return $validator;
     }
@@ -130,8 +135,19 @@ class PostsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['related_id'], 'Relateds'));
+        $rules->add($rules->existsIn(['parent_post_id'], 'ParentPosts'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         return $rules;
     }
+    
+    public function loadExistingVotes($userId) 
+    {
+        $this->hasMany('ExistingVotes', [
+            'className' => 'Votes',
+            'conditions' => [
+                'user_id' => $userId
+            ]
+        ]);
+    }
+    
 }

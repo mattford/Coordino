@@ -16,6 +16,7 @@ namespace Coordino\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Muffin\Footprint\Auth\FootprintAwareTrait;
 
 /**
  * Application Controller
@@ -27,6 +28,7 @@ use Cake\Event\Event;
  */
 class AppController extends Controller
 {
+    use FootprintAwareTrait;
     /**
      * The title for the page
      * @var string
@@ -69,6 +71,12 @@ class AppController extends Controller
             in_array($this->response->type(), ['application/json', 'application/xml'])
         ) {
             $this->set('_serialize', true);
+        }
+        
+        if ($this->Auth->user() !== null) {
+            $this->loadModel('Users');
+            $user = $this->Users->findById($this->Auth->user('id'))->first();
+            $this->set('currentUser', $user);
         }
         
         $this->set('pageTitle', $this->pageTitle);

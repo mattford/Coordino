@@ -42,8 +42,17 @@ use Cake\Routing\Router;
 Router::defaultRouteClass('DashedRoute');
 
 Router::scope('/', function ($routes) {
+    $routes->extensions(['json']);
+    
+    $routes->connect('/', ['controller'=>'posts', 'action'=>'recent']);
+    
+    $routes->connect('/questions/:action/*', ['controller'=>'posts']);
+    
+    $routes->connect('/register', ['controller'=>'users', 'action'=>'register']);
+    $routes->connect('/login', ['controller'=>'users', 'action'=>'login']);
 
-
+    $routes->connect('/users/:username', ['controller'=>'users', 'action'=>'view'], ['username'=>'[\w]+', 'pass'=>['username']]);
+    $routes->connect('/users/settings', ['controller' => 'users', 'action' => 'settings']);
     /**
      * Connect catchall routes for all controllers.
      *

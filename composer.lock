@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a07d40c7ae156e9a24c07c9b7f59d320",
-    "content-hash": "6fbbec7f17a5ceaf12c61a664672ff31",
+    "hash": "60b39d7a76f63527df5a79544a174c0c",
+    "content-hash": "300a1f9332cd551532dfd648cdcfd3c1",
     "packages": [
         {
             "name": "aura/installer-default",
@@ -287,6 +287,48 @@
             "time": "2015-06-10 10:35:13"
         },
         {
+            "name": "erusev/parsedown",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/erusev/parsedown.git",
+                "reference": "94688f21cc5d8bc85f1783b4c8b98b3288d712cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/94688f21cc5d8bc85f1783b4c8b98b3288d712cb",
+                "reference": "94688f21cc5d8bc85f1783b4c8b98b3288d712cb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Parsedown": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Emanuil Rusev",
+                    "email": "hello@erusev.com",
+                    "homepage": "http://erusev.com"
+                }
+            ],
+            "description": "Parser for Markdown.",
+            "homepage": "http://parsedown.org",
+            "keywords": [
+                "markdown",
+                "parser"
+            ],
+            "time": "2016-01-07 17:36:51"
+        },
+        {
             "name": "ircmaxell/password-compat",
             "version": "v1.0.4",
             "source": {
@@ -381,6 +423,60 @@
                 "php mobile detect"
             ],
             "time": "2015-12-24 16:37:50"
+        },
+        {
+            "name": "muffin/footprint",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/UseMuffin/Footprint.git",
+                "reference": "0f31ad6be0fbcff497ae8ccd07c1f862c595ebe9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/UseMuffin/Footprint/zipball/0f31ad6be0fbcff497ae8ccd07c1f862c595ebe9",
+                "reference": "0f31ad6be0fbcff497ae8ccd07c1f862c595ebe9",
+                "shasum": ""
+            },
+            "require-dev": {
+                "cakephp/cakephp": "~3.0",
+                "cakephp/cakephp-codesniffer": "2.*",
+                "phpunit/phpunit": "4.1.*"
+            },
+            "type": "cakephp-plugin",
+            "autoload": {
+                "psr-4": {
+                    "Muffin\\Footprint\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jad Bitar",
+                    "homepage": "http://jadb.io",
+                    "role": "Author"
+                },
+                {
+                    "name": "ADmad",
+                    "homepage": "https://github.com/ADmad",
+                    "role": "Author"
+                },
+                {
+                    "name": "Others",
+                    "homepage": "https://github.com/usemuffin/footprint/graphs/contributors"
+                }
+            ],
+            "description": "CakePHP 3.0+ plugin to allow passing currently logged in user to model layer",
+            "homepage": "https://github.com/usemuffin/footprint",
+            "keywords": [
+                "cakephp",
+                "footprint",
+                "muffin"
+            ],
+            "time": "2016-01-25 08:27:13"
         },
         {
             "name": "nesbot/carbon",
@@ -1258,6 +1354,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "erusev/parsedown": 20,
+        "muffin/footprint": 20,
         "psy/psysh": 0
     },
     "prefer-stable": true,

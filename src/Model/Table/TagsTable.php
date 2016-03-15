@@ -43,7 +43,7 @@ class TagsTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->requirePresence('tag', 'create')
+            ->requirePresence('name', 'create')
             ->notEmpty('tag');
 
         $validator

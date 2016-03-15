@@ -27,6 +27,7 @@ class PostTagsTable extends Table
         parent::initialize($config);
 
         $this->table('post_tags');
+        $this->primaryKey('id');
 
         $this->belongsTo('Posts', [
             'foreignKey' => 'post_id',
